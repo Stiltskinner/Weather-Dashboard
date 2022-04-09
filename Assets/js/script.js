@@ -11,17 +11,47 @@
 // Need a function to generate the search history cities list from local storage
 
 // Selectors
+var formSearchEl = document.querySelector("#form-search");
 var cityInputEl = document.querySelector("#formGroupSearchCity");
+var citySearchTerm = document.querySelector("#city-search-term");
 
 // API variables
 var apiKey = "40e6ee37a2f9ea4fba4775f3ce087c54";
-var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
 
-// Input variable
-var city;
+// Fires when the user submits the form with the city they are searching for, puts their input into the city variable and then calls the getCityWeather function
+var searchSubmitHandler = function (event) {
+  event.preventDefault();
 
-var searchSubmitHandler = function(event) {
-    event.preventDefault();
+  city = cityInputEl.value.trim();
+  getCityWeather(city);
+};
 
-    city = cityInputEl.value.trim();
+var getCityWeather = function (cityName) {
+  var queryURL =
+    "http://api.openweathermap.org/data/2.5/weather?q=" +
+    cityName +
+    "&appid=" +
+    apiKey +
+    "&units=imperial";
+
+  fetch(queryURL).then(function (response) {
+    if (response.ok) {
+      response.json().then(function (data) {
+        console.log(data);
+        displayCityWeather(data, cityName)
+      });
+    }
+    // This else should eventually display an error message as text on the actual webpage
+    else {
+        alert('Error: ' +response.statusText);
+    }
+  });
+};
+
+var displayCityWeather = function (cityWeather, searchTerm) {
+    citySearchTerm.textContent = searchTerm;
+    var tempToday = cityWeather.main.temp;
+    console.log(tempToday);
 }
+
+formSearchEl.addEventListener("submit", searchSubmitHandler);

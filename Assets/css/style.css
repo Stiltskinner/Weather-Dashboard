@@ -1,0 +1,6 @@
+.header-grad {
+    background-image: linear-gradient(to right,
+    rgba(51, 20, 228, 0.877) 0%,
+    rgb(141, 189, 235) 100%
+  );
+}

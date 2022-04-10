@@ -13,6 +13,9 @@ A Weather Dashboard for finding weather forecasts for cities and saving favorite
 
 <br>
 Repository Link: https://github.com/Stiltskinner/Weather-Dashboard
+<br>
 Deployed webpage: https://stiltskinner.github.io/Weather-Dashboard/
-The screenshot of the webpage below was taken after 5 pm, so all the boxes are gray. However, they do change colors at the appropriate times.
-![Screenshot of webpage](./Assets/Workday%20Scheduler%20Screenshot.png)
+<br>
+Screenshot of Deploayed Webpage
+
+![Screenshot of webpage](./Assets/Weather%20Dashboard.gif)

@@ -34,7 +34,7 @@ var historySearchHandler = function (event) {
 // Function to retrieve today's weather. It also calls populateHistory if a valid cityname was entered, otherwise it alerts the user that they entered an invalid city
 var getCityWeather = function (cityName) {
   var queryURL =
-    "http://api.openweathermap.org/data/2.5/weather?q=" +
+    "https://api.openweathermap.org/data/2.5/weather?q=" +
     cityName +
     "&appid=" +
     apiKey +
@@ -61,7 +61,7 @@ var getCityWeather = function (cityName) {
 // Function to retrieve 5-day forecast
 var getCityForecast = function (cityName) {
   var queryURL =
-  "http://api.openweathermap.org/data/2.5/forecast?q=" +
+  "https://api.openweathermap.org/data/2.5/forecast?q=" +
   cityName +
   "&appid=" +
   apiKey +

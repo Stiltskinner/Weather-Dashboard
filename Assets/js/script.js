@@ -20,19 +20,27 @@ var searchHistoryContainer = document.querySelector("#search-history");
 // API variables
 var apiKey = "40e6ee37a2f9ea4fba4775f3ce087c54";
 
-// Fires when the user submits the form with the city they are searching for, puts their input into the city variable and then calls the getCityWeather and getCityForecast functions
+// Fires when the user submits the form with the city they are searching for, puts their input into the city variable and then calls the getCityWeather and getCityForecast functions\
+var savedSearches = [];
+
+
 var searchSubmitHandler = function (event) {
   event.preventDefault();
-  element = event.target;
+
   city = cityInputEl.value.trim();
   getCityWeather(city);
   getCityForecast(city);
+  populateHistory(city);
 };
 
+// Fires when the user clicks a button from the search history. Uses text content of the button they clicked to fire getcityweather and getcityforecast
 var historySearchHandler = function (event) {
   event.preventDefault();
+  element = event.target;
   if (element.matches("button")) {
-  
+    var searchedCity = element.textContent;
+    getCityWeather(searchedCity);
+    getCityForecast(searchedCity);
   }
 }
 
@@ -159,7 +167,39 @@ var displayCityForecast = function (cityForecast, cityName) {
   }
 }
 
+// This creates the search history buttons, and it splices off the oldest one once the array reaches 11 objects. It also deletes the oldest button once the array reaches 11 objects.
+var populateHistory = function (city) {
+  var newBtn = document.createElement("button");
+  newBtn.setAttribute("class", "btn btn-secondary col-12 w-100 mb-3");
+  newBtn.textContent = city;
+  savedSearches.unshift(city);
+  searchHistoryContainer.prepend(newBtn);
+  if (savedSearches.length > 10) {
+    savedSearches.splice(10);
+    var badChild = document.querySelector('#search-history :nth-child(10)');
+    badChild.remove();
+  }
+  localStorage.setItem("savedSearches", JSON.stringify(savedSearches));
+}
+
+function init() {
+  savedSearches = JSON.parse(localStorage.getItem("savedSearches"));
+  if (savedSearches === []) {
+    return
+  }
+  if (!savedSearches) {
+    savedSearches = [];
+    return
+  }
+  for (i = 0; i < savedSearches.length; i++) {
+  var newBtn = document.createElement("button");
+  newBtn.setAttribute("class", "btn btn-secondary col-12 w-100 mb-3");
+  newBtn.textContent = savedSearches[i];
+  searchHistoryContainer.appendChild(newBtn);
+  }
+}
+
+init();
+
 formSearchEl.addEventListener("submit", searchSubmitHandler);
 searchHistoryContainer.addEventListener("click", historySearchHandler);
-
-// <button class="btn btn-secondary col-12 w-100 mb-3">Placeholder</button>

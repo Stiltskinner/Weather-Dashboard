@@ -20,4 +20,10 @@
 .card-5day {
   background-color: darkslateblue;
   color:aliceblue;
+  min-width: 10.3em;
+  max-width: 20%;
+}
+
+.icon-size {
+  max-width: 5em;
 }

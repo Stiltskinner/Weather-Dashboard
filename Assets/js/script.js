@@ -15,6 +15,7 @@ var formSearchEl = document.querySelector("#form-search");
 var cityInputEl = document.querySelector("#formGroupSearchCity");
 var forecastContainer = document.querySelector("#container-forecast");
 var todayContainer = document.querySelector("#forecast-today");
+var searchHistoryContainer = document.querySelector("#search-history");
 
 // API variables
 var apiKey = "40e6ee37a2f9ea4fba4775f3ce087c54";
@@ -22,11 +23,18 @@ var apiKey = "40e6ee37a2f9ea4fba4775f3ce087c54";
 // Fires when the user submits the form with the city they are searching for, puts their input into the city variable and then calls the getCityWeather and getCityForecast functions
 var searchSubmitHandler = function (event) {
   event.preventDefault();
-
+  element = event.target;
   city = cityInputEl.value.trim();
   getCityWeather(city);
   getCityForecast(city);
 };
+
+var historySearchHandler = function (event) {
+  event.preventDefault();
+  if (element.matches("button")) {
+  
+  }
+}
 
 // Function to retrieve today's weather
 var getCityWeather = function (cityName) {
@@ -104,29 +112,54 @@ var displayCityWeather = function (cityWeather, cityName) {
     cityDisplay.appendChild(humidity);
 }
 
+// This fills the variables and populates the 5 day forecast content onto the page
 var displayCityForecast = function (cityForecast, cityName) {
-  forecast5day.innerHTML = "";
+  var forecast5Container = document.createElement("div");
+  forecast5Container.setAttribute("class", "row px-0 w-100 ml-3")
+
+  var forecast5Header = document.createElement("div");
+  forecast5Header.setAttribute("class", "col-12 h4 p-0");
+  forecast5Header.textContent = "5-Day Forecast:";
+
   var forecast5cardcontainer = document.createElement("div");
-  forecast5cardcontainer.setAttribute("class", "col-12 col-md-9 h4");
-  forecast5cardcontainer.textContent = "5-Day Forecast:";
-  forecast5day.appendChild(forecast5cardcontainer);
-  forecastContainer.appendChild(forecast5day)
+  forecast5cardcontainer.setAttribute("class", "row container-fluid justify-content-between");
+
+  forecastContainer.appendChild(forecast5Container);
+  forecast5Container.appendChild(forecast5Header);
+  forecast5Container.appendChild(forecast5cardcontainer);
+
   // Starts at 4 because that is 9 AM, and then adds 8 to jump to the next day
   for (i = 4; i<cityForecast.list.length; i=i+8) {
     var newCard = document.createElement("div");
-    newCard.setAttribute("class", "card-5day");
+    newCard.setAttribute("class", "card card-5day col mr-4 mb-2");
     var icon = cityForecast.list[i].weather[0].icon;
     var dateUnix = cityForecast.list[i].dt;
-    var date = moment.unix(dateUnix).format('l');
+    var dateContent = moment.unix(dateUnix).format('l');
     var tempForecast = "Temp: " + cityForecast.list[i].main.temp + "°F";
     var windForecast = "Wind: " + cityForecast.list[i].wind.speed + " MPH";
     var humidForecast = "Humidity: " + cityForecast.list[i].main.humidity + "%";
+    var date = document.createElement('p');
+    date.setAttribute("class", "h5");
     var temp = document.createElement('p');
     var wind = document.createElement('p');
     var humidity = document.createElement('p');
+    var iconContainer = document.createElement('span');
+    iconContainer.setAttribute("class", "icon-size")
+    iconContainer.innerHTML = `<img src="./Assets/openweathermap-api-icons-master/icons/` + icon+ `.png">`
+    date.textContent= dateContent;
+    temp.textContent = tempForecast;
+    wind.textContent = windForecast;
+    humidity.textContent = humidForecast;
+    newCard.appendChild(date);
+    newCard.appendChild(iconContainer);
+    newCard.appendChild(temp);
+    newCard.appendChild(wind);
+    newCard.appendChild(humidity);
+    forecast5cardcontainer.appendChild(newCard);
   }
 }
 
 formSearchEl.addEventListener("submit", searchSubmitHandler);
+searchHistoryContainer.addEventListener("click", historySearchHandler);
 
-//         <section class="col-12 col-md-9 my-3" id="forecast-5day"></section>
+// <button class="btn btn-secondary col-12 w-100 mb-3">Placeholder</button>

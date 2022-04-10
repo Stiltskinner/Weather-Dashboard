@@ -4,3 +4,15 @@
     rgb(141, 189, 235) 100%
   );
 }
+
+.uv-good {
+  background-color: darkgreen;
+}
+
+.uv-med {
+  background-color: orange;
+}
+
+.uv-bad {
+  background-color: red;
+}

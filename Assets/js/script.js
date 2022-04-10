@@ -1,15 +1,3 @@
-// Psuedocode
-// Need to retrieve weather data from weather api based on user input
-// Need an event listener for the search button
-// Need an event listener for the saved cities buttons
-
-// Need a function to populate current weather
-// Need a function to create cards and populate them
-// Need a function to take user input and put it in a variable
-// Need a function to take user input variable and search through array from api for the city, then pull the temp wind humidity and uv index properties for that city. Also needs to pull the day 5 day forecast properties for that city
-// Need a function to save searched cities in local storage
-// Need a function to generate the search history cities list from local storage
-
 // Selectors
 var formSearchEl = document.querySelector("#form-search");
 var cityInputEl = document.querySelector("#formGroupSearchCity");
@@ -20,17 +8,16 @@ var searchHistoryContainer = document.querySelector("#search-history");
 // API variables
 var apiKey = "40e6ee37a2f9ea4fba4775f3ce087c54";
 
-// Fires when the user submits the form with the city they are searching for, puts their input into the city variable and then calls the getCityWeather and getCityForecast functions\
+// This variable is to store search history. It also gets populated from local storage when the page loads.
 var savedSearches = [];
 
-
+// Fires when the user submits the form with the city they are searching for, puts their input into the city variable and then calls the getCityWeather, getCityForecast, and populateHistory functions
 var searchSubmitHandler = function (event) {
   event.preventDefault();
 
   city = cityInputEl.value.trim();
   getCityWeather(city);
   getCityForecast(city);
-  populateHistory(city);
 };
 
 // Fires when the user clicks a button from the search history. Uses text content of the button they clicked to fire getcityweather and getcityforecast
@@ -44,7 +31,7 @@ var historySearchHandler = function (event) {
   }
 }
 
-// Function to retrieve today's weather
+// Function to retrieve today's weather. It also calls populateHistory if a valid cityname was entered, otherwise it alerts the user that they entered an invalid city
 var getCityWeather = function (cityName) {
   var queryURL =
     "http://api.openweathermap.org/data/2.5/weather?q=" +
@@ -59,14 +46,17 @@ var getCityWeather = function (cityName) {
         console.log(data);
         var cityName = data.name;
         displayCityWeather(data, cityName)
+        populateHistory(cityName);
       });
     }
-    // This else should eventually display an error message as text on the actual webpage
+    // This alerts the user if an invalid city is searched for
     else {
-        alert('Error: ' +response.statusText);
+        alert('Error: Invalid city.');
     }
   });
 };
+
+
 
 // Function to retrieve 5-day forecast
 var getCityForecast = function (cityName) {
@@ -81,13 +71,8 @@ var getCityForecast = function (cityName) {
     if (response.ok) {
       response.json().then(function (data) {
         console.log(data);
-        var cityName = data.name;
-        displayCityForecast(data, cityName)
+        displayCityForecast(data)
       });
-    }
-    // This else should eventually display an error message as text on the actual webpage
-    else {
-        alert('Error: ' +response.statusText);
     }
   });
 };
@@ -105,7 +90,6 @@ var displayCityWeather = function (cityWeather, cityName) {
     span.innerHTML = cityName + " " + moment().format("LLL") + `<img src="./Assets/openweathermap-api-icons-master/icons/` + icon+ `.png">`;
     cityDisplay.appendChild(span);
     forecastContainer.appendChild(cityDisplay);
-    // cityName.innerHTML = cityName + " " + moment().format("LLL") + `<img src="./Assets/openweathermap-api-icons-master/icons/` + icon+ `.png">`;
     var tempToday = "Temp: " + cityWeather.main.temp + "°F";
     var windToday = "Wind: " + cityWeather.wind.speed + " MPH";
     var humidToday = "Humidity: " + cityWeather.main.humidity + " %";
@@ -120,8 +104,8 @@ var displayCityWeather = function (cityWeather, cityName) {
     cityDisplay.appendChild(humidity);
 }
 
-// This fills the variables and populates the 5 day forecast content onto the page
-var displayCityForecast = function (cityForecast, cityName) {
+// This fills the variables and populates the 5 day forecast content onto the page with the appropriate variables
+var displayCityForecast = function (cityForecast) {
   var forecast5Container = document.createElement("div");
   forecast5Container.setAttribute("class", "row px-0 w-100 ml-3")
 
@@ -167,7 +151,7 @@ var displayCityForecast = function (cityForecast, cityName) {
   }
 }
 
-// This creates the search history buttons, and it splices off the oldest one once the array reaches 11 objects. It also deletes the oldest button once the array reaches 11 objects.
+// This creates the search history buttons, and it splices off the oldest one once the array reaches 11 objects. It also deletes the oldest button once the array reaches 11 objects. It also fills localstorage with the current value of the savedSearches array
 var populateHistory = function (city) {
   var newBtn = document.createElement("button");
   newBtn.setAttribute("class", "btn btn-secondary col-12 w-100 mb-3");
@@ -182,6 +166,7 @@ var populateHistory = function (city) {
   localStorage.setItem("savedSearches", JSON.stringify(savedSearches));
 }
 
+// This fires when the page loads and checks local storage for saved Searches. If it's empty, it stops, if it's null, it sets SavedSearches to be an empty array. If there is content in localstorage, it creates buttons using that history and populates them in the search history part of the page
 function init() {
   savedSearches = JSON.parse(localStorage.getItem("savedSearches"));
   if (savedSearches === []) {
@@ -201,5 +186,6 @@ function init() {
 
 init();
 
+// Event Listeners
 formSearchEl.addEventListener("submit", searchSubmitHandler);
 searchHistoryContainer.addEventListener("click", historySearchHandler);

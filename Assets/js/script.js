@@ -51,12 +51,21 @@ var getCityWeather = function (cityName) {
     }
     // This alerts the user if an invalid city is searched for
     else {
-        alert('Error: Invalid city.');
+        // alert('Error: Invalid city.');
+        invalidCityHandler();
     }
   });
 };
 
-
+function invalidCityHandler () {
+  forecastContainer.innerHTML = "";
+  var errorDisplay = document.createElement('div');
+  var span = document.createElement('span');
+  span.setAttribute('class', 'h2');
+  span.textContent = "Sorry, that's not a valid city. Please check your search term and try again."
+  errorDisplay.appendChild(span);
+  forecastContainer.appendChild(errorDisplay);
+}
 
 // Function to retrieve 5-day forecast
 var getCityForecast = function (cityName) {

@@ -162,6 +162,9 @@ var displayCityForecast = function (cityForecast) {
 
 // This creates the search history buttons, and it splices off the oldest one once the array reaches 11 objects. It also deletes the oldest button once the array reaches 11 objects. It also fills localstorage with the current value of the savedSearches array
 var populateHistory = function (city) {
+  if (savedSearches.includes(city)) {
+    return
+  }
   var newBtn = document.createElement("button");
   newBtn.setAttribute("class", "btn btn-secondary col-12 w-100 mb-3");
   newBtn.textContent = city;
